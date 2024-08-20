@@ -1,0 +1,45 @@
+# This is a dsc task for Dev Box.
+
+$schema: 1.0
+name: dsc
+description: Applies a dsc configuration to the Dev Box.
+author: Microsoft Corporation
+command: '{{configurationPath}} | ./runDSC.ps1 -InlineConfiguration {{inlineConfiguration4}}'
+parameters:
+  configurationPath:
+    default: ''
+    type: 'string'
+    required: true
+    description: |
+      The path to a DSC configuration file in Yaml or JSON format. The path can be either local on the machine or a URL. If the path is a URL, the file will be downloaded to a temporary location and then applied. The property also accepts "inline" as a value, to indicate the configuration text is included within the workload Yaml using the "inlineConfiguration" property.
+  inlineConfiguration:
+    default: ''
+    type: 'string'
+    required: false
+    description: |
+      For very small configurations, you can specify the configuration within the task. To use this option set "configurationPath" to "inline", otherwise the value of inlineConfiguration is ignored. The content will not be evaluated by your editor because it is parsed as a string.
+documentation:
+  notes: This task allows applying a DSC configuration file.
+  examples:
+    - name: dsc
+      description: Apply a configuration from a public URL
+      parameters:
+        configurationPath: https://raw.githubusercontent.com/microsoft/devhome/main/sampleConfigurations/microsoft/vscode/configuration.dsc.yaml
+    - name: dsc
+      description: Apply a winget configuration from a local file that's already present on the machine
+      parameters:
+        configurationFile: 'C:\Config\dsc.yaml'
+    - name: dsc
+      description: Apply a simple configuration using inline code
+      parameters:
+        configurationPath: inline
+        inlineConfiguration: |
+          $schema: https://raw.githubusercontent.com/PowerShell/DSC/main/schemas/2024/04/config/document.json
+          resources:
+          - name: current user registry
+            type: Microsoft.Windows/Registry
+            properties:
+              keyPath: HKCU\Software\Microsoft\Windows\CurrentVersion\
+              valueName: Run
+              valueData: "C:\Windows\System32\notepad.exe"
+              _ensure: Present
