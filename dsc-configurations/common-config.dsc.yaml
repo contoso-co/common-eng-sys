@@ -28,7 +28,7 @@ properties:
       directives:
         allowPrerelease: true
       settings:
-        id: Git.Git
+        id: Microsoft.Git
     ### Configure Git to use Default WAM account
     ### -------------------------------------
     - resource: PSDscResources/Script
